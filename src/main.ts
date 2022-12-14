@@ -4,11 +4,15 @@ import {
   Message,
   Contact,
 } from 'wechaty'
+
 import qrTerm from 'qrcode-terminal'
 import { FileBox } from 'file-box'
 
+import { ChatGPTBot } from "./chatgpt.js";
+const chatGPTBot = new ChatGPTBot();
+
 const options = {
-  name : 'ding-dong-bot',
+  name : 'chatgpt-wechat-bot',
 
   /**
    * You can specify different puppet for different IM protocols.
@@ -60,8 +64,10 @@ function onScan (qrcode: string, status: ScanStatus) {
   // console.info(`[${ScanStatus[status]}(${status})] ${qrcodeImageUrl}\nScan QR Code above to log in: `)
 }
 
-function onLogin (user: Contact) {
+async function onLogin (user: Contact) {
   console.info(`${user.name()} login`)
+  chatGPTBot.setBotName(user.name());
+  await chatGPTBot.startGPTBot();
 }
 
 function onLogout (user: Contact) {
@@ -79,6 +85,10 @@ function onError (e: Error) {
 
 async function onMessage (msg: Message) {
   console.info(msg.toString())
+  if (msg.text().startsWith("/ping ")) {
+    await msg.say("pong");
+    return;
+  }
 
   if (msg.self()) {
     console.info('Message discarded because its outgoing')
@@ -91,34 +101,26 @@ async function onMessage (msg: Message) {
   }
 
   if (msg.type() !== bot.Message.Type.Text
-    || !/^(ding|ping|bing|code)$/i.test(msg.text())
+    || !/^(d )$/i.test(msg.text())
   ) {
     console.info('Message discarded because it does not match ding/ping/bing/code')
     return
   }
 
-  /**
-   * 1. reply 'dong'
-   */
-  await msg.say('dong')
-  console.info('REPLY: dong')
+  await msg.say(msg.text())
+  console.info(msg.text())
 
-  /**
-   * 2. reply image(qrcode image)
-   */
+  /*
   const fileBox = FileBox.fromUrl('https://wechaty.github.io/wechaty/images/bot-qr-code.png')
-
   await msg.say(fileBox)
   console.info('REPLY: %s', fileBox.toString())
 
-  /**
-   * 3. reply 'scan now!'
-   */
   await msg.say([
     'Join Wechaty Developers Community\n\n',
     'Scan now, because other Wechaty developers want to talk with you too!\n\n',
     '(secret code: wechaty)',
   ].join(''))
+   */
 }
 
 /**

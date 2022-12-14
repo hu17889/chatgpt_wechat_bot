@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "chatgpt-wechat-bot"
+version = "0.1.0"
+description = ""
+authors = ["hucong <hucong17889_2004@163.com>"]
+readme = "README.md"
+packages = [{include = "chatgpt_wechat_bot"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+revChatGPT = "^0.0.33.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

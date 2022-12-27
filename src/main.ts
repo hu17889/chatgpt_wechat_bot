@@ -91,8 +91,8 @@ async function onMessage (msg: Message) {
   }
 
   if (msg.self()) {
-    console.info('Message discarded because its outgoing')
-    return
+    console.info('Message discarded because of sending from me')
+    //return
   }
 
   if (msg.age() > 2 * 60) {
